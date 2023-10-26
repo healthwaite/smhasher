@@ -917,6 +917,18 @@ inline void sha2_256_64(const void *key, int len, uint32_t seed, void *out)
   sha256_done(&ltc_state, buf);
   memcpy(out, buf, 8);
 }
+inline void sha2_256_128(const void *key, int len, uint32_t seed, void *out)
+{
+  // objsize
+  unsigned char buf[32];
+  hash_state ltc_state;
+  sha256_init(&ltc_state);
+  ltc_state.sha256.state[0] ^= seed;
+  ltc_state.sha256.state[0] += len; // hardened against padding
+  sha256_process(&ltc_state, (unsigned char *)key, len);
+  sha256_done(&ltc_state, buf);
+  memcpy(out, buf, 16);
+}
 inline void rmd128(const void *key, int len, uint32_t seed, void *out)
 {
   // objsize
